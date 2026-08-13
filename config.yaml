@@ -1,5 +1,5 @@
 name: "CARATEC BMS BLE"
-version: "2.1.0"
+version: "3.0.0"
 slug: "caratec_batteries"
 description: "CARATEC Batterien über BLE auslesen"
 arch: [aarch64]
@@ -28,7 +28,7 @@ schema:
   mqtt_port: int
   mqtt_user: str
   mqtt_pass: password
-  poll_interval: int(1,60)
+  poll_interval: int(1,15)
   batteries:
     - name: str
       address: str

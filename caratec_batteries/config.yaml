@@ -1,8 +1,11 @@
 name: "CARATEC BMS BLE"
-version: "3.0.0"
+version: "3.1.0"
 slug: "caratec_batteries"
-description: "CARATEC Batterien über BLE auslesen"
-arch: [aarch64]
+description: "Wattstunde-Nova-Core-Batterien über BLE auslesen und per MQTT bereitstellen"
+url: "https://github.com/omc69/CARATEC-BMS-BLE"
+arch:
+  - aarch64
+  - amd64
 init: false
 host_network: true
 privileged:
@@ -20,8 +23,10 @@ options:
   poll_interval: 5
   batteries:
     - name: "battery_1"
+      display_name: "Batterie 1"
       address: "10:23:81:8B:13:1A"
     - name: "battery_2"
+      display_name: "Batterie 2"
       address: "10:23:81:8B:13:AD"
 schema:
   mqtt_host: str
@@ -31,4 +36,5 @@ schema:
   poll_interval: int(1,15)
   batteries:
     - name: str
+      display_name: str?
       address: str

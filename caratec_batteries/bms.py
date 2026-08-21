@@ -124,18 +124,29 @@ SENSORS = [
     ("voltage", "Spannung", "V", "voltage", "measurement"),
     ("current", "Strom", "A", "current", "measurement"),
     ("power", "Leistung", "W", "power", "measurement"),
-    ("remaining", "Restkapazitaet", "Ah", None, "measurement"),
-    ("capacity", "Nennkapazitaet", "Ah", None, None),
+    ("remaining", "Restkapazität", "Ah", None, "measurement"),
+    ("capacity", "Nennkapazität", "Ah", None, None),
     ("cycles", "Zyklen", None, None, "measurement"),
     ("temperature", "Temperatur", "°C", "temperature", "measurement"),
     ("problem", "Fehlercode", None, None, None),
 ]
 
 
+def display_name(name):
+    """Anzeigename der Batterie. `display_name` aus der Konfiguration, sonst
+    aus dem Schluessel abgeleitet: battery_1 -> Battery 1."""
+    for eintrag in BATTERIES:
+        if eintrag.get("name") == name:
+            gewuenscht = str(eintrag.get("display_name") or "").strip()
+            if gewuenscht:
+                return gewuenscht
+    return name.replace("_", " ").title()
+
+
 def device_block(name):
     return {
         "identifiers": [name],
-        "name": f"PACE BMS {name}",
+        "name": display_name(name),
         "manufacturer": "Wattstunde",
         "model": "Nova Core",
         "sw_version": BMS_VERSION,
@@ -145,7 +156,8 @@ def device_block(name):
 def publish_discovery(name, cells):
     for key, label, unit, dclass, sclass in SENSORS:
         disc = {
-            "name": f"{name} {key}",
+            "name": label,
+            "has_entity_name": True,
             "state_topic": f"pace_bms/{name}",
             "availability_topic": avail_topic(name),
             "value_template": f"{{{{ value_json.{key} }}}}",
@@ -162,7 +174,8 @@ def publish_discovery(name, cells):
                       json.dumps(disc), retain=True)
     for i in range(1, len(cells) + 1):
         disc = {
-            "name": f"{name} cell_{i}",
+            "name": f"Zelle {i}",
+            "has_entity_name": True,
             "state_topic": f"pace_bms/{name}",
             "availability_topic": avail_topic(name),
             "value_template": f"{{{{ value_json.cells[{i - 1}] }}}}",

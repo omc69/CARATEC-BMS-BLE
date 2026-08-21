@@ -1,30 +1,43 @@
-# CARATEC BMS BLE
+# CARATEC Add-ons für Home Assistant
 
-Liest die 12-V-LiFePO4-Batterien im CARATEC/Niesmann+Bischoff-Wohnmobil über
-Bluetooth Low Energy aus und stellt die Werte per MQTT in Home Assistant bereit.
+Add-on-Repository für Wohnmobile der CARATEC- und Niesmann+Bischoff-Reihe.
 
-## Funktionen
+## Installation
 
-- Ladezustand (SOC), Spannung, Strom und Leistung
-- Restkapazität, Nennkapazität und Ladezyklen
-- Einzelne Zellspannungen und Temperatur
-- Fehlercode des BMS
-- MQTT Auto-Discovery inklusive Availability-Topic
-- Bis zu 4 Batterien
+1. In Home Assistant: **Einstellungen → Add-ons → Add-on-Store**
+2. Oben rechts das Dreipunktmenü → **Repositories**
+3. Diese URL eintragen und hinzufügen:
 
-## Konfiguration
+   ```
+   https://github.com/omc69/CARATEC-BMS-BLE
+   ```
 
-- **mqtt_host**: MQTT-Broker (Standard: `core-mosquitto`)
-- **mqtt_user / mqtt_pass**: MQTT-Zugangsdaten
-- **poll_interval**: Abfrage-Intervall in Sekunden (1–15, Standard 5)
-- **batteries**: Liste der Batterien mit Name und BLE-Adresse
+4. Der Store zeigt jetzt den Abschnitt **CARATEC Add-ons**. Add-on auswählen,
+   installieren, konfigurieren, starten.
 
-## Unterstützte Hardware
+Beim ersten Start baut der Supervisor das Docker-Abbild auf dem Zielgerät.
+Auf einem Raspberry Pi dauert das ein paar Minuten — das ist normal und passiert
+nur einmal je Version.
 
-**Wattstunde Nova Core** BMS über BLE-Modul mit MAC-Präfix `10:23:81` oder `60:6E:41`.
-Getestet mit den 105-Ah-Batterien im Niesmann+Bischoff Arto 88.
+## Enthaltene Add-ons
 
-Die Protokoll-Dekodierung folgt der Referenz-Implementierung
-[`aiobmsble`](https://github.com/patman15/aiobmsble) (`bms/ws_nova_bms.py`, Apache-2.0).
+### [CARATEC BMS BLE](caratec_batteries/)
 
-Details siehe [DOCS.md](DOCS.md).
+Liest Wattstunde-Nova-Core-Batterien über Bluetooth Low Energy aus und stellt
+die Werte per MQTT-Discovery in Home Assistant bereit: Ladezustand, Spannung,
+Strom, Leistung, Restkapazität, Zyklen, Zelltemperatur, einzelne Zellspannungen
+und den Fehlercode des BMS.
+
+Voraussetzungen: ein MQTT-Broker (etwa das Mosquitto-Add-on) und ein
+BLE-fähiger Host. Getestet auf Raspberry Pi 5 mit Home Assistant OS.
+
+## Voraussetzungen an den Host
+
+Das Add-on braucht direkten Zugriff auf den Bluetooth-Adapter des Hosts
+(`host_dbus`, `SYS_RAWIO`). Läuft parallel eine andere Integration auf demselben
+Adapter — etwa `bms_ble` —, streiten sich beide um die Verbindung. Nur eine von
+beiden betreiben.
+
+## Lizenz
+
+Siehe [LICENSE](LICENSE).
